@@ -1,0 +1,55 @@
+
+
+# cd command
+alias cdinf "cd /home/scratch.harryd_inf/"
+alias cdinf1 "cd /home/scratch.harryd_inf_1/"
+alias cdinf2 "cd /home/scratch.harryd_inf_2/"
+alias cdinf3 "cd /home/scratch.harryd_inf_3/"
+alias cdinf4 "cd /home/scratch.harryd_inf_4/"
+alias cdinf5 "cd /home/scratch.harryd_gpu/"
+alias cdinf6 "cd /home/scratch.harryd_inf_movestoragerequest_129316_new"
+alias cd1    "cd .."
+alias cd2    "cd ../.."
+alias cd3    "cd ../../.."
+alias cd4    "cd ../../../.."
+alias cd5    "cd ../../../../.."
+alias cdss   "cd /home/nv/utils/stepstone/latest"
+alias cdesj  "cd /home/nv/utils/easyjenkins/0.7.1/"
+alias cdas2  "cd /home/scratch.harryd_inf_2/workspace/as2/dev/inf/axrules/2.0/ip/stepstone/trees"
+alias cdbot "cd /home/scratch.harryd_inf_1/nlp_related/farmbot"
+alias tot cd \`depth\`
+alias cddaily 'cd /home/scratch.tegra_infra/jenkins/easyjks/security_ip_daily_build/easyjks-EasyJKS-nvip-security-daily_build-security_ip_daily_build-node1-harryd-sc/nvip_harryd_security_daily_build/hw/nvip'
+alias vm1 'ssh harryd-vm-01'
+alias vm3 'ssh harryd-vm3.nvidia.com'
+
+# qsub
+alias qs4 "qsub -app affinity   --projectMode direct   -P gpu_ga102_hw_mmplex_secip     -q o_pri_cpu_4G -Is  tcsh"
+alias qs8 qsub -app affinity   --projectMode direct -P gpu_ga102_hw_mmplex_secip    -q o_pri_interactive_cpu_8G -Is tcsh
+alias qs16 qsub -app affinity   --projectMode direct  -P mobile_t239_hw_mmplex_secip    -q o_pri_interactive_cpu_16G -Is tcsh
+alias qs32 qsub -app affinity   --projectMode direct  -P mobile_t239_hw_mmplex_secip    -q tool_asic_32G_24H -Is tcsh
+
+alias la 'ls -a'
+
+# p4 command
+alias p4e "p4 edit"
+alias p4a "p4 add"
+alias p4o "p4 opened"
+alias p4c "p4 change"
+alias p4s "p4 submit -c"
+
+# useful tools
+alias removep4  "/home/nv/utils/mplxinf/implements/remove_p4_client"
+alias data_dumper "/home/nv/utils/mplxinf/security/py_lib/data_dumper.py"
+alias nvgpuipgen "/home/nv/utils/mplxinf/security/NVGPUIPGen/1.1/NVGPUIPGen.py"
+
+alias tmuxn     "tmux new -s "
+alias tmuxls    "tmux ls "
+alias tmuxa     "tmux attach -t "
+alias tmuxkill  "tmux kill-session -t "
+
+
+alias c "clear"
+alias h "history"
+alias v "/usr/bin/vim"
+
+alias uv "/home/harryd/.local/bin/uv"
