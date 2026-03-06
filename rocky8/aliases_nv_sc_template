@@ -18,7 +18,7 @@ alias cdesj  "cd /home/nv/utils/easyjenkins/0.7.1/"
 alias cdas2  "cd /home/scratch.harryd_inf_2/workspace/as2/dev/inf/axrules/2.0/ip/stepstone/trees"
 alias cdbot "cd /home/scratch.harryd_inf_1/nlp_related/farmbot"
 alias tot cd \`depth\`
-alias cddaily 'cd /home/scratch.tegra_infra/jenkins/easyjks/security_ip_daily_build/easyjks-EasyJKS-nvip-security-daily_build-security_ip_daily_build-node1-harryd-sc/nvip_harryd_security_daily_build/hw/nvip'
+
 alias vm1 'ssh harryd-vm-01'
 alias vm3 'ssh harryd-vm3.nvidia.com'
 

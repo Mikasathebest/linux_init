@@ -1,0 +1,123 @@
+ This file is copied from /home/ip/shared/inf/rbs/1.0/utils_latest/rbs_src/UserEnv/common.cshrc
+if (! $?RBS_SRC_UTILS_PATH) then
+    setenv RBS_SRC_UTILS_PATH /home/ip/shared/inf/rbs/1.0/utils_latest
+endif
+############################################
+# global NV .cshrc file (//hw/nv/env/.cshrc)
+############################################
+if (-f $RBS_SRC_UTILS_PATH/rbs_src/UserEnv/nvglobal.cshrc) then
+    source $RBS_SRC_UTILS_PATH/rbs_src/UserEnv/nvglobal.cshrc
+endif
+# WA to fix colors disabled in xterm from file /home/nv/env/app-defaults/XTerm by env var set in the nvglobal_tools.cshrc
+setenv XUSERFILESEARCHPATH ~/app-defaults/%N
+
+##################################################
+# from central ilyk cshrc (/home/yokadm/mtl/cshrc)
+##################################################
+umask 022 
+
+# Define GRID_SITE for grid tools availability
+#if(! $?GRID_SITE) then
+#    setenv GRID_SITE /usr/cad/univa/sge/site
+#endif
+
+# System binaries definition
+setenv GROUPSBIN "/usr/bin/groups" 
+
+# to fix SGE error on CentOS6
+# unsetenv LS_COLORS 
+# unsetenv LESSOPEN
+unset autologout
+# Insert LSF PATH
+if (-f /home/lsf_linux/conf/cshrc.lsf) then
+  source /home/lsf_linux/conf/cshrc.lsf
+endif
+# Insert FIRST priority PATH
+set path=( /home/ip/shared/inf/rbs/1.0/tools_links /home/nv/bin $HOME/.local/bin $path )
+set -f path=( $path:q )
+#
+set HOST = `/bin/hostname`
+set matchbeep=nomatch
+set nobeep
+set autolist
+set histdup="erase"
+set autolist = ambiguous
+setenv PAGER   less
+setenv EDITOR vim
+setenv LESS    -i-S-q-u-R
+setenv LANG C
+
+# starting Rocky8 OS, the default is not good, so setting explicitly
+setenv LC_CTYPE C
+setenv PYTHONCOERCECLOCALE 0
+
+# to define core files size
+#limit core 0
+# to solve problems with stations that are not configured properly
+setenv TZ Israel
+# set prompt
+if ($?prompt) then
+    set history=500
+    set prompt = "%m:%/>"
+endif
+
+if (`uname` == "SunOS") then
+   alias mail "mailx"
+endif
+
+#####################################
+if ($?DISPLAY) then
+    if (`echo $DISPLAY | cut -d : -f1` == "127.0.0.1") then
+        #XWin live session
+        setenv DISPLAY $HOST\:`echo $DISPLAY | cut -d : -f2`
+    endif
+    if (`echo $DISPLAY | cut -c1` == ":") then
+        #Vnc session
+        setenv DISPLAY $HOST$DISPLAY
+    endif
+    if (`echo $DISPLAY | cut -d : -f1` == "localhost") then
+        #Vnc session
+        setenv DISPLAY $HOST\:`echo $DISPLAY | cut -d : -f2`
+    endif
+    /usr/bin/xhost + >& /dev/null
+endif
+#####################################
+# Source SGE environment
+#if(! $?SGE_ROOT) then
+#        setenv SGE_ROOT /usr/cad/univa/sge/release
+#endif
+
+if (! $?MANPATH) then
+    setenv MANPATH  /usr/share/man
+endif
+
+#setenv MANPATH "${MANPATH}:${SGE_ROOT}/man"
+#setenv MANPATH `echo -n $MANPATH | awk -v RS=: -v ORS=: '! arr[$0]++'|sed 's/:$//'`
+
+#if (-f $SGE_ROOT/SourcedFiles/sge_gvars.csh) then
+#   source $SGE_ROOT/SourcedFiles/sge_gvars.csh
+#endif
+
+# setup LSF environment
+alias setlsf 'source /home/lsf_linux/conf/setlsf.csh'
+
+# proj_setup by Oren Vaserberger <orenv@nvidia.com>
+alias proj_setup 'source /home/nbu_be_tools/be_utils/release/proj_setup \!*'
+
+# Perforce definitions
+setenv P4EDITOR $EDITOR
+setenv P4CONFIG .p4config
+setenv P4IGNORE .p4ignore
+setenv P4MERGE  p4merge.sh
+setenv P4CLIENT  "DUMMY_DEFAULT_CLIENT_NAME"
+setenv P4USEBROWSER false
+setenv P4DIFF diff
+#################################
+
+########################
+# from veri common cshrc
+########################
+set autolist
+unset autologout
+
+setenv XFSFIX tcp/mtl001:7100

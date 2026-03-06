@@ -1,0 +1,41 @@
+#!/bin/csh
+#**********************************************************
+# cshrc.lsf:
+#    Sets the C shell user environment for LSF commands
+#
+# Instructions:
+#    Add this file to the end of the .cshrc file for all 
+#    LSF users:
+#    o  Copy cshrc.lsf into .cshrc for each user
+#       OR
+#    o  Add a line similar to the following to the end of 
+#       .cshrc:
+#       source /usr/local/lsf/conf/cshrc.lsf
+#
+# See the LSF UNIX Installation Guide for more information 
+#********************************************************** 
+setenv LSF_TOP /home/lsf_linux
+setenv LSF_VERSION 10.1
+#--------------------------------------------------------------------------
+# This code gets the binary type when setting LSF user environment.
+# It is based on found_binary_type() in scripts/funcs.sh.
+#
+# (c) Copyright IBM Corp. 1992, 2016. All rights reserved. 
+# US Government Users Restricted Rights - Use, duplication or disclosure 
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#---------------------------------------------------------------------------
+
+set _CUR_PATH_ENV = "$PATH"
+setenv PATH /usr/bin:/bin:/usr/local/bin:/local/bin:/sbin:/usr/sbin:/usr/ucb:/usr/sbin:/usr/bsd:${PATH}
+
+# handle difference between system V and BSD echo
+# To echo "foo" with no newline, do
+# echo $enf "foo" $enl
+
+if ( "`echo -n`" == "-n" )  then
+    set enf=
+    set enl="\c"
+else
+    set enf=-n
+    set enl=
+endif
