@@ -1,12 +1,10 @@
-# ~/.cshrc for Ubuntu 24.04 tcsh/csh
-
 # --- Basic settings ---
 set history      = 200
-set savehist     = (200 merge)
-set autolist     # list choices on ambiguous completion
-set autorehash   # auto-rehash PATH for new commands
-set noclobber    # prevent '>' from overwriting files
-set ignoreeof    # avoid accidental logout with Ctrl-D
+set savehist     = 200
+set autolist
+set autorehash
+set noclobber
+set ignoreeof
 
 # --- Locale & editor ---
 setenv LANG      en_US.UTF-8
@@ -22,11 +20,7 @@ set path = ( \
     /usr/sbin /usr/bin /sbin /bin \
 )
 
-# If you use snaps or custom toolchains, add them here, e.g.:
-# set path = ( /snap/bin $path )
-
 # --- Prompt (colored, shows host and cwd) ---
-# Requires tcsh; plain csh will ignore colors.
 set prompt = "%{\033[1;32m%}%n@%m%{\033[0m%}:%{\033[1;34m%}%~%{\033[0m%}%# "
 
 # Show exit status of last command if non-zero
@@ -47,10 +41,6 @@ alias duh     'du -sh * | sort -h'
 alias cpuinfo  'lscpu | egrep "Model name|CPU\(s\):"'
 alias meminfo  'free -h'
 alias osinfo   'cat /etc/os-release'
-
-# --- SSH and history niceties ---
-setenv HISTCONTROL  ignoredups
-setenv HISTSIZE     200
 
 # --- Per-host or private overrides ---
 if ( -r $HOME/.cshrc.local ) then
