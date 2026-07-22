@@ -1,10 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Cursor AI date wrapper for command execution bypass
-# The wrapper script at ~/.cursor_bypass/date allows AI assistants to execute commands
-export PATH="$HOME/.cursor_bypass:$PATH"
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -104,121 +100,29 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias sshpdx30="ssh -p 2547 pdx-container-xterm-030.prd.it.nvidia.com"
-alias sshsc25="ssh -p 2442 dc7-container-xterm-25.nvidia.com"
-alias sshtlv="ssh tlv02"
-
 alias resource="source ~/.zshrc"
 alias h="history "
-alias c="clear" 
+alias c="clear"
 alias v="vim"
-alias cs234="cd /Users/harryd/Google\ Drive/My\ Drive/Study/xcs234"
-alias vm1="ssh harryd-vm-01"
-alias vm3="ssh harryd-vm3.nvidia.com"
 alias tmuxls="tmux ls"
 alias tmuxa="tmux attach -t"
 alias tmuxn="tmux new -s "
 alias tmuxkill="tmux  kill-session -t "
 alias typora="open -a typora"
 
-# >>> conda lazy initialization >>>
-# Instead of loading at startup, load conda when needed
-function conda_init() {
-    source "$HOME/.conda-init.sh"
-}
-
-# Create conda, conda activate and conda deactivate commands
-function conda() {
-    conda_init
-    command conda "$@"
-}
-
-function activate_conda() {
-    conda_init
-    conda activate "$@"
-}
-
-alias conda-activate=activate_conda
-# <<< conda lazy initialization <<<
-
+# Machine-local tooling (cursor bypass, conda/nvm, proxies) — see zsh_custom
+[[ -f "$HOME/.zsh_custom" ]] && source "$HOME/.zsh_custom"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/harryd/.lmstudio/bin"
-
 . "$HOME/.local/bin/env"
 
-# Lazy load NVM
-export NVM_DIR="$HOME/.nvm"
-function load_nvm() {
-    [ -s "$HOME/.nvm-init.sh" ] && source "$HOME/.nvm-init.sh"
-}
-
-# Create wrappers for node, npm, and other Node-related commands
-for cmd in nvm node npm npx yarn pnpm; do
-    eval "function $cmd() { load_nvm; unset -f $cmd; $cmd \"\$@\"; }"
-done
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
 export GEMINI_API_KEY="AIzaSyDLY7dmZKE-mvo5j1EOhmcKCz0Lyy970ro"
 
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 # Tavily search https://app.tavily.com/home
 export TAVILY_API_KEY=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
-
-
-# Proxy for Claude Code
-# 1. Configuration for your specific tunnel
-export CLAUDE_PROXY_HOST="127.0.0.1"
-export CLAUDE_SOCKS_PORT=1080   # Your ssh -D port
-export CLAUDE_HTTP_PORT=8123    # Local http proxy port
-
-# 2. Function to start the bridge and set vars
-function claude-on() {
-    echo "🌐 Starting HTTP-to-SOCKS bridge..."
-    # Start bridge in background silently
-    hpts -s 127.0.0.1:$CLAUDE_SOCKS_PORT -p $CLAUDE_HTTP_PORT &!
-    
-    # Set proxy variables strictly for this shell
-    export HTTP_PROXY="http://127.0.0.1:$CLAUDE_HTTP_PORT"
-    export HTTPS_PROXY="http://127.0.0.1:$CLAUDE_HTTP_PORT"
-    
-    echo "✅ Claude Code proxy ENABLED (Port $CLAUDE_HTTP_PORT -> SOCKS $CLAUDE_SOCKS_PORT)"
-}
-
-# 3. Function to clear vars and kill bridge
-function claude-off() {
-    unset HTTP_PROXY
-    unset HTTPS_PROXY
-    
-    # Kill the background hpts process
-    pkill -f "http-proxy-to-socks.*$CLAUDE_HTTP_PORT"
-    
-    echo "❌ Claude Code proxy DISABLED"
-}
-
-# Start LiteLLM proxy for Claude Code + NVIDIA
-function litellm-start() {
-    cd ~/Documents/projects/clawdbot_setup
-    source .venv/bin/activate
-    export $(grep -v '^#' .env | xargs)
-    nohup litellm --config litellm_config.yaml --port 4000 > /tmp/litellm.log 2>&1 &
-    echo "LiteLLM proxy started on port 4000"
-}
-
-function litellm-stop() {
-    pkill -f "litellm.*--port 4000"
-    echo "LiteLLM proxy stopped"
-}
-
-# Run Claude Code via NVIDIA
-alias claude-nv='ANTHROPIC_BASE_URL="http://127.0.0.1:4000" ANTHROPIC_API_KEY="dummy" claude'
-

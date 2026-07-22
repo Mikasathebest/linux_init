@@ -43,12 +43,17 @@ backup_and_copy() {
 }
 
 # ---------- zshrc ----------
-echo "[1/2] Setting up ~/.zshrc ..."
+echo "[1/3] Setting up ~/.zshrc ..."
 backup_and_copy "$SCRIPT_DIR/zshrc_template" "$HOME/.zshrc" "~/.zshrc"
 echo ""
 
+# ---------- zsh_custom (optional tooling: cursor bypass, conda/nvm, proxies) ----------
+echo "[2/3] Setting up ~/.zsh_custom ..."
+backup_and_copy "$SCRIPT_DIR/zsh_custom" "$HOME/.zsh_custom" "~/.zsh_custom"
+echo ""
+
 # ---------- vimrc ----------
-echo "[2/2] Setting up ~/.vimrc ..."
+echo "[3/3] Setting up ~/.vimrc ..."
 backup_and_copy "$REPO_ROOT/vimrc_template" "$HOME/.vimrc" "~/.vimrc"
 echo ""
 

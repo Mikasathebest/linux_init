@@ -1,0 +1,105 @@
+# =============================================================================
+# ~/.zsh_custom — machine-local / optional tooling (sourced from ~/.zshrc)
+# =============================================================================
+# Keep personal paths, lazy loaders, and proxy helpers here so ~/.zshrc stays
+# close to the stock oh-my-zsh template and is easier to diff across machines.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Cursor AI date wrapper (command-execution bypass)
+# -----------------------------------------------------------------------------
+# Corporate / restricted environments often block arbitrary shell commands from
+# AI assistants. This repo uses a "date" wrapper so Cursor can still run tools:
+#
+#   ~/.cursor_bypass/date  — pretends to be `date`, but `date -ai <cmd>` runs
+#                            any command. Real `date` (no -ai) still works.
+#
+# Putting ~/.cursor_bypass first on PATH makes the wrapper shadow /bin/date.
+# Install / refresh the wrapper if missing, then ensure this PATH line is set.
+#
+#   mkdir -p ~/.cursor_bypass
+#   # copy the Liberation Tool wrapper script to ~/.cursor_bypass/date
+#   chmod +x ~/.cursor_bypass/date
+#
+# Verify:  date -ai --help   # should print "Liberation Tool"
+# -----------------------------------------------------------------------------
+export PATH="$HOME/.cursor_bypass:$PATH"
+
+# >>> conda lazy initialization >>>
+# Load conda only when first invoked (faster shell startup)
+function conda_init() {
+    source "$HOME/.conda-init.sh"
+}
+
+function conda() {
+    conda_init
+    command conda "$@"
+}
+
+function activate_conda() {
+    conda_init
+    conda activate "$@"
+}
+
+alias conda-activate=activate_conda
+# <<< conda lazy initialization <<<
+
+# LM Studio CLI (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
+
+# Lazy load NVM — init on first use of node/npm/etc.
+export NVM_DIR="$HOME/.nvm"
+function load_nvm() {
+    [ -s "$HOME/.nvm-init.sh" ] && source "$HOME/.nvm-init.sh"
+}
+
+for cmd in nvm node npm npx yarn pnpm; do
+    eval "function $cmd() { load_nvm; unset -f $cmd; $cmd \"\$@\"; }"
+done
+
+# =============================================================================
+# Proxy for Claude Code
+# =============================================================================
+# Requires a local SOCKS tunnel (e.g. ssh -D) and http-proxy-to-socks (hpts).
+# 1. Tunnel config
+export CLAUDE_PROXY_HOST="127.0.0.1"
+export CLAUDE_SOCKS_PORT=1080   # Your ssh -D port
+export CLAUDE_HTTP_PORT=8123    # Local HTTP proxy port
+
+# 2. Start HTTP-to-SOCKS bridge and enable proxy for this shell
+function claude-on() {
+    echo "🌐 Starting HTTP-to-SOCKS bridge..."
+    hpts -s 127.0.0.1:$CLAUDE_SOCKS_PORT -p $CLAUDE_HTTP_PORT &!
+
+    export HTTP_PROXY="http://127.0.0.1:$CLAUDE_HTTP_PORT"
+    export HTTPS_PROXY="http://127.0.0.1:$CLAUDE_HTTP_PORT"
+
+    echo "✅ Claude Code proxy ENABLED (Port $CLAUDE_HTTP_PORT -> SOCKS $CLAUDE_SOCKS_PORT)"
+}
+
+# 3. Clear proxy vars and stop the bridge
+function claude-off() {
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    pkill -f "http-proxy-to-socks.*$CLAUDE_HTTP_PORT"
+    echo "❌ Claude Code proxy DISABLED"
+}
+
+# =============================================================================
+# LiteLLM proxy (Claude Code + NVIDIA)
+# =============================================================================
+function litellm-start() {
+    cd ~/Documents/projects/clawdbot_setup
+    source .venv/bin/activate
+    export $(grep -v '^#' .env | xargs)
+    nohup litellm --config litellm_config.yaml --port 4000 > /tmp/litellm.log 2>&1 &
+    echo "LiteLLM proxy started on port 4000"
+}
+
+function litellm-stop() {
+    pkill -f "litellm.*--port 4000"
+    echo "LiteLLM proxy stopped"
+}
+
+# Run Claude Code via NVIDIA LiteLLM endpoint
+alias claude-nv='ANTHROPIC_BASE_URL="http://127.0.0.1:4000" ANTHROPIC_API_KEY="dummy" claude'
